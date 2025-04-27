@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Medical Report Analyzer</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(45deg, #89f7fe, #66a6ff);
+      background-size: 400% 400%;
+      animation: backgroundAnimation 10s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    @keyframes backgroundAnimation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      animation: floatEffect 6s ease-in-out infinite;
+    }
+
+    @keyframes floatEffect {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+
+    h2 {
+      font-size: 28px;
+      margin-bottom: 20px;
+      color: #0077b6;
+    }
+
+    input[type="file"] {
+      margin: 20px 0;
+      padding: 14px;
+      background: #e0f7fa;
+      border: 2px dashed #0077b6;
+      border-radius: 12px;
+      width: 100%;
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+
+    input[type="file"]:hover {
+      background-color: #b2ebf2;
+      transform: scale(1.05);
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 15px 25px;
+      background-color: #0077b6;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #005f87;
+      transform: scale(1.05);
+    }
+
+    #loader {
+      margin: 20px auto;
+      display: none;
+    }
+
+    .loader {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #0077b6;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #result {
+      margin-top: 20px;
+      background: #e0f7fa;
+      padding: 20px;
+      border-radius: 10px;
+      color: #333;
+      white-space: pre-wrap;
+      display: none;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container" id="container">
+    <h2>Medical Report Analyzer</h2>
+    <input type="file" id="fileInput" accept="image/*">
+    <button id="analyzeButton">Analyze Report</button>
+
+    <div id="loader">
+      <div class="loader"></div>
+    </div>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const apiKey = 'AIzaSyDEsgs4kZYYXhmJNRECWcZ_FcDseYrB2rA'; // Your Gemini API Key
+
+    const fileInput = document.getElementById('fileInput');
+    const analyzeButton = document.getElementById('analyzeButton');
+    const resultDiv = document.getElementById('result');
+    const loaderDiv = document.getElementById('loader');
+
+    // Convert image to base64
+    function convertImageToBase64(file, callback) {
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const base64String = e.target.result.split(',')[1];
+          callback(base64String);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        console.error("No file selected!");
+      }
+    }
+
+    // Send to Gemini API
+    async function analyzeMedicalReport(base64Image) {
+      const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+      const requestData = {
+        contents: [
+          {
+            parts: [
+              {
+                text: "Analyze this medical report image. Explain it simply for an old person. Write answers short and clear.And recommend some fruits."
+              },
+              {
+                inlineData: {
+                  mimeType: "image/jpeg",
+                  data: base64Image
+                }
+              }
+            ]
+          }
+        ]
+      };
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+        console.log(data);
+
+        if (data.candidates && data.candidates.length > 0) {
+          resultDiv.innerText = data.candidates[0].content.parts[0].text;
+        } else {
+          resultDiv.innerText = "No result found.";
+        }
+
+      } catch (error) {
+        console.error('Error analyzing report:', error);
+        resultDiv.innerText = "Error occurred. Check console.";
+      } finally {
+        loaderDiv.style.display = "none";
+        resultDiv.style.display = "block";
+      }
+    }
+
+    // Button click
+    analyzeButton.addEventListener('click', () => {
+      const file = fileInput.files[0];
+      if (!file) {
+        alert('Please upload an image first!');
+        return;
+      }
+
+      resultDiv.style.display = "none";
+      loaderDiv.style.display = "block";
+
+      convertImageToBase64(file, function(base64String) {
+        analyzeMedicalReport(base64String);
+      });
+    });
+  </script>
+
+</body>
+</html>
