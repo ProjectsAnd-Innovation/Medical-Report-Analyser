@@ -1,113 +1,93 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 /* Reset */
-* {
+body, html {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-}
-
-html, body {
-  height: auto;
-  min-height: 100%;
+  height: 100%;
+  overflow: hidden;
   font-family: 'Roboto', sans-serif;
-  background: linear-gradient(45deg, #89f7fe, #66a6ff);
-  background-size: 400% 400%;
-  animation: backgroundAnimation 10s ease infinite;
-  scroll-behavior: smooth;
 }
 
-@keyframes backgroundAnimation {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
+/* Container */
 .container {
-  background: rgba(255, 255, 255, 0.95);
-  padding: 40px 30px;
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 40px;
   border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-  width: 90%;
   max-width: 500px;
-  margin: 40px auto;
+  margin: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow: 0px 0px 20px rgba(0,0,0,0.3);
   text-align: center;
 }
 
+/* Headings */
 h2 {
-  font-size: 28px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   color: #0077b6;
 }
-
-.hacktron-tagline {
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 20px;
-  font-style: italic;
+h4 {
+  margin-top: -10px;
+  color: #495057;
+  font-weight: normal;
 }
 
-/* 3D Hacktron 2025 text */
-.hacktron-3d {
-  font-size: 18px;
-  font-weight: bold;
-  color: #fff;
-  background: linear-gradient(45deg, #00c6ff, #0072ff);
-  padding: 8px 20px;
-  border-radius: 15px;
-  box-shadow: 0px 8px 20px rgba(0,0,0,0.4);
-  margin-bottom: 20px;
-}
-
+/* File input */
 input[type="file"] {
-  margin: 20px 0;
-  padding: 14px;
-  background: #e0f7fa;
-  border: 2px dashed #0077b6;
-  border-radius: 12px;
+  margin-top: 15px;
+  padding: 12px;
   width: 100%;
+  border-radius: 10px;
+  border: 2px dashed #0077b6;
+  background: #e0f7fa;
   cursor: pointer;
-  font-size: 16px;
-  transition: 0.3s;
 }
 
-input[type="file"]:hover {
-  background-color: #b2ebf2;
-  transform: scale(1.05);
-}
-
+/* Buttons */
 button {
-  margin-top: 10px;
-  padding: 15px 25px;
+  margin-top: 15px;
+  padding: 12px;
+  width: 100%;
+  border-radius: 10px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+#analyzeButton {
   background-color: #28a745;
   color: white;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.3s;
-  width: 100%;
 }
-
-button:hover {
+#analyzeButton:hover {
   background-color: #218838;
   transform: scale(1.05);
 }
 
+/* Language Selector Buttons */
+.language-button {
+  background-color: #66a6ff;
+  color: white;
+  margin-top: 5px;
+}
+.language-button:hover {
+  background-color: #4d8fd1;
+  transform: scale(1.05);
+}
+
+/* Loader */
 #loader {
   margin: 20px auto;
   display: none;
-}
-
-.loader {
   border: 6px solid #f3f3f3;
   border-top: 6px solid #0077b6;
   border-radius: 50%;
   width: 40px;
   height: 40px;
   animation: spin 1s linear infinite;
-  margin: auto;
 }
 
 @keyframes spin {
@@ -115,49 +95,17 @@ button:hover {
   100% { transform: rotate(360deg); }
 }
 
+/* Result */
 #result {
   margin-top: 20px;
   background: #e0f7fa;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 12px;
   color: #333;
-  white-space: pre-wrap;
   display: none;
-  animation: fadeIn 1s ease forwards;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.language-selector {
-  margin: 20px 0;
-}
-
-#languageOptions {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 10px;
-}
-
+/* Hidden class */
 .hidden {
   display: none;
-}
-
-.language-button {
-  padding: 10px;
-  background-color: #66a6ff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  color: white;
-  font-weight: bold;
-  transition: background-color 0.3s, transform 0.3s;
-}
-
-.language-button:hover {
-  background-color: #4d8fd1;
-  transform: scale(1.05);
 }
