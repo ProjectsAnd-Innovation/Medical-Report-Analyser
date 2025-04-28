@@ -17,7 +17,7 @@ VANTA.NET({
 });
 
 // API key
-const apiKey = 'AIzaSyDEsgs4kZYYXhmJNRECWcZ_FcDseYrB2rA'; // <-- Replace with your API key
+const apiKey = 'only replace with key'; // <-- Replace with your API key
 
 // Elements
 const fileInput = document.getElementById('fileInput');
